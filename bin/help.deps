@@ -1,0 +1,5 @@
+Required dependencies:
+- bash
+- curl or wget
+- tar (for Linux/macOS)
+- unzip (for Windows)

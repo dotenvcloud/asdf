@@ -1,0 +1,11 @@
+#!/usr/bin/env bash
+set -e
+
+releases_url="https://api.github.com/repos/lostlink/dotenv-cli/releases"
+
+# Fetch all tags and filter out pre-releases unless ASDF_DOTENV_INCLUDE_PRERELEASE is set
+if [ "${ASDF_DOTENV_INCLUDE_PRERELEASE}" = "true" ]; then
+  curl -s "$releases_url" | grep -oE 'tag_name": "v[^"]+' | sed 's/tag_name": "v//' | sort -V
+else
+  curl -s "$releases_url" | jq -r '.[] | select(.prerelease == false) | .tag_name' | sed 's/^v//' | sort -V
+fi
