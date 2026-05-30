@@ -14,12 +14,11 @@ jobs:
         os: [ubuntu-latest, macos-latest]
     steps:
       - uses: actions/checkout@v4
-      - uses: asdf-vm/actions/setup@v2
-      
+      - uses: asdf-vm/actions/setup@v3
+
       - name: Test plugin installation
-        run: |
-          asdf plugin test dotenv . dotenv version
-      
+        run: asdf plugin test dotenv . dotenv version
+
       - name: Test listing versions
         run: |
           asdf plugin add dotenv .
