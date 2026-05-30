@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 set -e
 
-releases_url="https://api.github.com/repos/lostlink/dotenv-cli/releases"
+releases_url="https://api.github.com/repos/dotenvcloud/cli/releases"
 
 # Fetch all tags and filter out pre-releases unless ASDF_DOTENV_INCLUDE_PRERELEASE is set
 if [ "${ASDF_DOTENV_INCLUDE_PRERELEASE}" = "true" ]; then

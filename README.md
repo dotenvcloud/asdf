@@ -5,7 +5,7 @@
 ## Install
 
 ```bash
-asdf plugin add dotenv https://github.com/lostlink/dotenv-asdf.git
+asdf plugin add dotenv https://github.com/dotenvcloud/asdf.git
 ```
 
 ## Use

@@ -28,9 +28,9 @@ install_dotenv() {
     ext=".exe"
   fi
 
-  local download_url="https://github.com/lostlink/dotenv-cli/releases/download/v${version}/dotenv-cli_${version}_${platform}_${arch}.tar.gz"
+  local download_url="https://github.com/dotenvcloud/cli/releases/download/v${version}/dotenv-cli_${version}_${platform}_${arch}.tar.gz"
   if [ "$platform" = "windows" ]; then
-    download_url="https://github.com/lostlink/dotenv-cli/releases/download/v${version}/dotenv-cli_${version}_${platform}_${arch}.zip"
+    download_url="https://github.com/dotenvcloud/cli/releases/download/v${version}/dotenv-cli_${version}_${platform}_${arch}.zip"
   fi
   
   echo "Downloading dotenv-cli v${version} for ${platform}/${arch}..."
