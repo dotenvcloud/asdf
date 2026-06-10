@@ -12,9 +12,13 @@ jobs:
     strategy:
       matrix:
         os: [ubuntu-latest, macos-latest]
+    env:
+      # Authenticate bin/list-all's GitHub API call (see bin/list-all) so the
+      # shared-IP unauthenticated rate limit doesn't flake the macOS runner.
+      GITHUB_API_TOKEN: ${{ github.token }}
     steps:
-      - uses: actions/checkout@v4
-      - uses: asdf-vm/actions/setup@v3
+      - uses: actions/checkout@v5
+      - uses: asdf-vm/actions/setup@v4
 
       - name: Test plugin installation
         run: asdf plugin test dotenv . dotenv version
