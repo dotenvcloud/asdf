@@ -3,9 +3,19 @@ set -e
 
 releases_url="https://api.github.com/repos/dotenvcloud/cli/releases"
 
+# Authenticate the GitHub API call when a token is available. The unauthenticated
+# limit (60/hr per IP) is shared across CI runners and intermittently returns an
+# error object instead of the releases array — on macOS runners this surfaced as
+# "list-all did not return any version".
+auth=()
+token="${GITHUB_API_TOKEN:-${GITHUB_TOKEN:-${GH_TOKEN:-}}}"
+if [ -n "$token" ]; then
+  auth=(-H "Authorization: token $token")
+fi
+
 # Fetch all tags and filter out pre-releases unless ASDF_DOTENV_INCLUDE_PRERELEASE is set
 if [ "${ASDF_DOTENV_INCLUDE_PRERELEASE}" = "true" ]; then
-  curl -s "$releases_url" | grep -oE 'tag_name": "v[^"]+' | sed 's/tag_name": "v//' | sort -V
+  curl -s "${auth[@]}" "$releases_url" | grep -oE 'tag_name": "v[^"]+' | sed 's/tag_name": "v//' | sort -V
 else
-  curl -s "$releases_url" | jq -r '.[] | select(.prerelease == false) | .tag_name' | sed 's/^v//' | sort -V
+  curl -s "${auth[@]}" "$releases_url" | jq -r '.[] | select(.prerelease == false) | .tag_name' | sed 's/^v//' | sort -V
 fi
