@@ -5,67 +5,31 @@ install_dotenv() {
   local install_type=$1
   local version=$2
   local install_path=$3
+  local download_path=$4
 
   if [ "$install_type" != "version" ]; then
     echo "asdf-dotenv supports release installs only"
     exit 1
   fi
 
-  local platform=$(uname -s | tr '[:upper:]' '[:lower:]')
-  local arch=$(uname -m)
-  
-  case "$arch" in
-    x86_64) arch="amd64" ;;
-    aarch64|arm64) arch="arm64" ;;
-    i386|i686) arch="386" ;;
-    *) echo "Unsupported architecture: $arch"; exit 1 ;;
-  esac
-
   # Handle Windows
+  local platform=$(uname -s | tr '[:upper:]' '[:lower:]')
   local ext=""
   if [ "$platform" = "windows" ] || [[ "$platform" =~ mingw|msys|cygwin ]]; then
-    platform="windows"
     ext=".exe"
   fi
 
-  local download_url="https://github.com/dotenvcloud/cli/releases/download/v${version}/dotenv-cli_${version}_${platform}_${arch}.tar.gz"
-  if [ "$platform" = "windows" ]; then
-    download_url="https://github.com/dotenvcloud/cli/releases/download/v${version}/dotenv-cli_${version}_${platform}_${arch}.zip"
+  local binary="$download_path/dotenv${ext}"
+  if [ ! -f "$binary" ]; then
+    echo "Downloaded binary not found at $binary"
+    exit 1
   fi
-  
-  echo "Downloading dotenv-cli v${version} for ${platform}/${arch}..."
-  
+
   mkdir -p "$install_path/bin"
-  local tmp_dir=$(mktemp -d)
-  trap "rm -rf $tmp_dir" EXIT
-  
-  if ! curl -fsSL "$download_url" -o "$tmp_dir/archive" 2>/dev/null; then
-    echo "Failed to download dotenv-cli v${version}"
-    echo "URL: $download_url"
-    exit 1
-  fi
-  
-  cd "$tmp_dir"
-  if [ "$platform" = "windows" ]; then
-    unzip -q archive
-  else
-    tar -xzf archive
-  fi
-  
-  # Find the binary (might be in current dir or in a subdirectory)
-  local binary_name="dotenv${ext}"
-  if [ -f "$binary_name" ]; then
-    mv "$binary_name" "$install_path/bin/"
-  elif [ -f "bin/$binary_name" ]; then
-    mv "bin/$binary_name" "$install_path/bin/"
-  else
-    echo "Binary not found in archive"
-    exit 1
-  fi
-  
+  cp "$binary" "$install_path/bin/dotenv${ext}"
   chmod +x "$install_path/bin/dotenv${ext}"
-  
+
   echo "dotenv-cli v${version} installed successfully!"
 }
 
-install_dotenv "$ASDF_INSTALL_TYPE" "$ASDF_INSTALL_VERSION" "$ASDF_INSTALL_PATH"
+install_dotenv "$ASDF_INSTALL_TYPE" "$ASDF_INSTALL_VERSION" "$ASDF_INSTALL_PATH" "$ASDF_DOWNLOAD_PATH"
